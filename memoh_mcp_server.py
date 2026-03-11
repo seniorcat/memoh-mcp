@@ -170,9 +170,10 @@ def create_container(bot_id: str) -> str:
 
 
 @mcp.tool()
-def delete_container(bot_id: str) -> str:
-    """Delete a bot's container."""
-    return _dump(_api("DELETE", f"/bots/{bot_id}/container"))
+def delete_container(bot_id: str, preserve_data: bool = False) -> str:
+    """Delete a bot's container. Set preserve_data=True to keep /data files for next container."""
+    qs = "?preserve_data=true" if preserve_data else ""
+    return _dump(_api("DELETE", f"/bots/{bot_id}/container{qs}"))
 
 
 @mcp.tool()
@@ -313,9 +314,16 @@ def get_messages(bot_id: str, limit: int = 10) -> str:
         raw_content = m.get("content", "")
         if isinstance(raw_content, dict):
             parts = raw_content.get("content", [])
-            text = " ".join(p.get("text", "") for p in parts if isinstance(p, dict))
+            if isinstance(parts, list):
+                text = " ".join(
+                    p.get("text", "") for p in parts if isinstance(p, dict)
+                )
+            else:
+                text = str(parts)
         elif isinstance(raw_content, list):
-            text = " ".join(p.get("text", "") for p in raw_content if isinstance(p, dict))
+            text = " ".join(
+                p.get("text", "") for p in raw_content if isinstance(p, dict)
+            )
         else:
             text = str(raw_content)
         ts = m.get("created_at", "")[:19]
