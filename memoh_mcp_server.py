@@ -309,6 +309,7 @@ def get_messages(bot_id: str, limit: int = 10) -> str:
     lines = []
     for m in messages:
         role = m.get("role", "?")
+        # content can be a string or a nested object with content[].text
         raw_content = m.get("content", "")
         if isinstance(raw_content, dict):
             parts = raw_content.get("content", [])
