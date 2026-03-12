@@ -273,7 +273,7 @@ def list_memories(bot_id: str) -> str:
 @mcp.tool()
 def add_memory(bot_id: str, content: str) -> str:
     """Add a memory to a bot."""
-    return _dump(_api("POST", f"/bots/{bot_id}/memory", {"content": content}))
+    return _dump(_api("POST", f"/bots/{bot_id}/memory", {"message": content}))
 
 
 @mcp.tool()
